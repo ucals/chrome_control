@@ -102,7 +102,7 @@ def start_browser(
         cmd = (
             f'google-chrome --remote-debugging-port=9222 --no-sandbox '
             f'--disable-notifications --start-maximized --no-first-run '
-            f'--disable-gpu '
+            f'--disable-gpu --use-fake-ui-for-media-stream --use-fake-device-for-media-stream --geolocation="-23.5475,-46.6361,100" '
             f'--no-default-browser-check 1>{out_file} 2>{err_file} &'
         )
         if len(args) > 0:
