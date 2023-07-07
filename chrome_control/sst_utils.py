@@ -146,3 +146,11 @@ def is_url_reachable(url):
             return False
     except requests.exceptions.RequestException:
         return False
+
+
+def screenshot(
+        display: str = os.getenv('DISPLAY', ':1'),
+        output_file: str = '/tmp/screenshot.png'
+):
+    cmd = f"DISPLAY={display} import -window root {output_file}"
+    os.system(cmd)

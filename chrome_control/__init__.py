@@ -5,7 +5,8 @@ from .behavior import (
     human_move, human_typing, human_scroll, press, tiny_sleep, double_hit
 )
 from .sst_utils import (
-    goto, get_page_source, get_coords, start_browser, eval_js, close_browser
+    goto, get_page_source, get_coords, start_browser, eval_js, close_browser,
+    screenshot
 )
 
 # When fail-safe mode is True, moving the mouse to the upper-left
@@ -77,11 +78,15 @@ def main():
         'stop',
         help='Stop Chrome')
 
+    # create the parser for the "screenshot" command
+    parser_screenshot = subparsers.add_parser(
+        'screenshot',
+        help='Take a screenshot')
+
     args = parser.parse_args()
 
     if args.subcommand_name == 'goto':
         goto(args.url)
-
     elif args.subcommand_name == 'get-page-source':
         source = get_page_source()
         if args.destination is None:
@@ -89,23 +94,19 @@ def main():
         else:
             with open(args.destination, 'w') as f:
                 f.write(source)
-
     elif args.subcommand_name == 'get-coords':
         coords = get_coords(
             args.selector,
-            randomize_within_bcr=args.not_randomize_within_bcr,
-            highlight=args.highlight
+            randomize_within_bcr=args.not_randomize_within_bcr
         )
         print(coords)
-
     elif args.subcommand_name == 'eval-js':
         print(eval_js(args.expression))
-
     elif args.subcommand_name == 'start':
         start_browser(incognito=args.incognito)
-
     elif args.subcommand_name == 'stop':
         close_browser()
-
+    elif args.subcommand_name == 'screenshot':
+        screenshot()
     else:
         parser.print_help()

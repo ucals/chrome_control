@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='chrome_control',
-    version='0.2.0',
+    version='0.2.1',
     entry_points={
         'console_scripts': [
             'chrome-control = chrome_control:main',
