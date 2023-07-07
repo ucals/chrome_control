@@ -126,11 +126,11 @@ def start_browser(
             raise RuntimeError('Error: Chrome did not start in Dev mode.')
 
 
-def close_browser():
+def close_browser(kill_command: str = 'pkill'):
     if sys.platform == 'darwin':
-        os.system("killall -9 'Google Chrome'")
+        os.system(f"{kill_command} -9 'Google Chrome'")
     else:
-        os.system("killall -9 'google-chrome'")
+        os.system(f"{kill_command} -9 'google-chrome'")
 
 
 def is_url_reachable(url):
