@@ -102,7 +102,7 @@ def main():
         start_browser()
 
     elif args.subcommand_name == 'stop':
-        stop_browser()
+        close_browser()
 
     else:
         parser.print_help()
