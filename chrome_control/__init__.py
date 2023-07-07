@@ -13,7 +13,6 @@ from .sst_utils import (
 pyautogui.FAILSAFE = True
 
 
-
 def main():
     parser = argparse.ArgumentParser(description='Chrome Control CLI')
     subparsers = parser.add_subparsers(
