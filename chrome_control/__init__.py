@@ -10,7 +10,7 @@ from .sst_utils import (
 
 # When fail-safe mode is True, moving the mouse to the upper-left
 # will raise a pyautogui.FailSafeException that can abort your program:
-pyautogui.FAILSAFE = True
+pyautogui.FAILSAFE = False
 
 
 def main():
