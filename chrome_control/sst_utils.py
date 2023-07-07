@@ -77,12 +77,15 @@ def start_browser(
         chrome_path: str = DEFAULT_PATH_ON_MAC,
         log_path: str | Path = '/tmp',
         sleep_after_start: int = 5,
-        force_restart_chrome: bool = False
+        force_restart_chrome: bool = False,
+        incognito: bool = False,
 ):
     temp_dir_str = '--user-data-dir=/tmp' if start_in_temp_dir else ''
     out_file = Path(log_path) / 'out.log'
     err_file = Path(log_path) / 'err.log'
     arg_str = ' '.join(args)
+    incognito_flag = '--incognito' if incognito else ''
+
     if sys.platform == 'darwin':
         # On MacOS Monterey, we need to start Google Chrome in fullscreen mode
         # to get the correct coordinates.
@@ -90,19 +93,20 @@ def start_browser(
             f'{chrome_path} --remote-debugging-port=9222 --start-maximized '
             f'{temp_dir_str} --profile-directory="{chrome_profile}" '
             f'--disable-notifications --start-fullscreen {arg_str} '
-            f'1>{out_file} 2>{err_file} &'
+            f'{incognito_flag} 1>{out_file} 2>{err_file} &'
         )
     else:
         cmd = (
             f'google-chrome --remote-debugging-port=9222 --start-maximized '
-            f'--disable-notifications {arg_str} 1>{out_file} 2>{err_file} &'
+            f'--disable-notifications {arg_str} {incognito_flag} '
+            f'1>{out_file} 2>{err_file} &'
         )
 
     if os.getenv('DOCKER') == '1':
         cmd = (
             f'google-chrome --remote-debugging-port=9222 --no-sandbox '
             f'--disable-notifications --start-maximized --no-first-run '
-            f'--disable-gpu '
+            f'--disable-gpu {incognito_flag}'
             f'--no-default-browser-check 1>{out_file} 2>{err_file} &'
         )
         if len(args) > 0:
