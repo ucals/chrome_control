@@ -134,7 +134,7 @@ def close_browser(kill_command: str = 'pkill'):
     if sys.platform == 'darwin':
         os.system(f"{kill_command} -9 'Google Chrome'")
     else:
-        os.system(f"{kill_command} -9 'google-chrome'")
+        os.system(f"{kill_command} -9 'chrome'")
 
 
 def is_url_reachable(url):
