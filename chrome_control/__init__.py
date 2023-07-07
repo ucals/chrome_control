@@ -67,6 +67,10 @@ def main():
     parser_start = subparsers.add_parser(
         'start',
         help='Start Chrome listening to remote debug')
+    parser_start.add_argument(
+        '--incognito',
+        action='store_true',
+        help='Whether to start Chrome in incognito mode.')
 
     # create the parser for the "stop" command
     parser_stop = subparsers.add_parser(
@@ -98,7 +102,7 @@ def main():
         print(eval_js(args.expression))
 
     elif args.subcommand_name == 'start':
-        start_browser()
+        start_browser(incognito=args.incognito)
 
     elif args.subcommand_name == 'stop':
         close_browser()
