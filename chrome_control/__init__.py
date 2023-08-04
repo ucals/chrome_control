@@ -6,7 +6,7 @@ from .behavior import (
 )
 from .sst_utils import (
     goto, get_page_source, get_coords, start_browser, eval_js, close_browser,
-    screenshot
+    screenshot, get_coords_contain
 )
 
 # When fail-safe mode is True, moving the mouse to the upper-left
@@ -55,6 +55,27 @@ def main():
         action='store_true',
         help='Whether to highlight the element.')
 
+    # create the parser for the "get-coords-contain" command
+    parser_gcc = subparsers.add_parser(
+        'get-coords-contain',
+        help='Get the coordinates of a CSS selector that contains a text')
+    parser_gcc.add_argument(
+        'selector',
+        type=str,
+        help='The CSS selector to get the coordinates of.')
+    parser_gcc.add_argument(
+        'text',
+        type=str,
+        help='The text the element must contain.')
+    parser_gcc.add_argument(
+        '--not-randomize-within-bcr',
+        action='store_false',
+        help='Whether to randomize the coordinates within the bounding client rect.')
+    parser_gcc.add_argument(
+        '--highlight',
+        action='store_true',
+        help='Whether to highlight the element.')
+
     # create the parser for the "eval-js" command
     parser_ejs = subparsers.add_parser(
         'eval-js',
@@ -97,6 +118,13 @@ def main():
     elif args.subcommand_name == 'get-coords':
         coords = get_coords(
             args.selector,
+            randomize_within_bcr=args.not_randomize_within_bcr
+        )
+        print(coords)
+    elif args.subcommand_name == 'get-coords-contain':
+        coords = get_coords_contain(
+            args.selector,
+            args.text,
             randomize_within_bcr=args.not_randomize_within_bcr
         )
         print(coords)

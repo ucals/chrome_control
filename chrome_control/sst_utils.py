@@ -61,6 +61,39 @@ def get_coords(
     return x, y
 
 
+def get_coords_contain(
+        selector: str,
+        text: str,
+        randomize_within_bcr: bool = True,
+        highlight_bb: bool = False,
+        script_name: str = 'coords.js'
+) -> tuple | None:
+    cmd = f"node {get_script_path(script_name)} '{selector}' '{text}'"
+    coords = subprocess.check_output(cmd, shell=True)
+    coords = coords.decode()
+
+    x, y = 0, 0
+    try:
+        parsed = json.loads(coords)
+        x, y = parsed['x'], parsed['y']
+
+        if randomize_within_bcr:
+            x += random.randint(0, math.floor(parsed['width'] / 4))
+            y += random.randint(0, math.floor(parsed['height'] / 4))
+
+        if highlight_bb:
+            # Just add a red thick border around the CSS selector
+            cmd = """var el = document.querySelector('""" + selector + \
+                  """'); if (el) { el.style.border = "2px solid #ff0000"; }"""
+            eval_js(cmd)
+
+    except Exception as e:
+        print(f'getCoords() failed with Error: {e}')
+        return None
+
+    return x, y
+
+
 def eval_js(command: str, script_name: str = 'eval_js.js'):
     with open('/tmp/eval_command.txt', 'w') as f:
         f.write(command)

@@ -227,10 +227,59 @@ async function getCoords(css_selector) {
   }
 }
 
+async function getCoordsContain(css_selector, text) {
+  let client;
+  try {
+    // connect to endpoint
+    client = await CDP();
+    // extract domains
+    const { Page, Runtime, DOM } = client;
+    // enable events then start!
+    await Promise.all([Runtime.enable()]);
+
+    let result = null;
+    let clientRectCmd = `var targetCoordEl = Array.from(document.querySelectorAll('${css_selector}')).find(el => el.textContent === '${text}'); if (targetCoordEl) { JSON.stringify(targetCoordEl.getClientRects()); }`;
+
+    result = await Runtime.evaluate({
+      expression: clientRectCmd,
+    });
+
+    // get offset screen positioning
+    const screenPos = await Runtime.evaluate({
+      expression: "JSON.stringify({offsetY: window.screen.height - window.innerHeight, offsetX: window.screen.width - window.innerWidth})"
+    });
+
+    let offset = JSON.parse(screenPos.result.value);
+    let clientRect = null;
+
+    try {
+      clientRect = JSON.parse(result.result.value)["0"];
+    } catch(err) {
+      return null;
+    }
+
+    let retVal =  {
+      x: offset.offsetX + clientRect.x,
+      y: offset.offsetY + clientRect.y,
+      width: clientRect.width,
+      height: clientRect.height,
+    };
+    console.log(JSON.stringify(retVal));
+    return retVal;
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (client) {
+      await client.close();
+    }
+  }
+}
+
 const argLength = process.argv.length;
 
 if (argLength === 3) {
   getCoords(process.argv[2]);
 } else if (argLength === 4) {
-  getCoordsIframe(process.argv[2], process.argv[3]);
+  // getCoordsIframe(process.argv[2], process.argv[3]);
+  getCoordsContain(process.argv[2], process.argv[3]);
 }
